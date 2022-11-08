@@ -102,7 +102,6 @@ button {
     outline: none;
 }
 
-/*=============== THEME ===============*/
 /*========== Variables Dark theme ==========*/
 body.dark-theme {
     --first-color: hsl(182, 53%, 74%);
@@ -123,10 +122,6 @@ body.dark-theme {
     cursor: pointer;
 }
 
-/*========== 
-    Color changes in some parts of 
-    the website, in dark theme 
-==========*/
 .dark-theme .change-theme,
 .dark-theme .nav__toggle,
 .dark-theme .nav__shop,
@@ -227,17 +222,15 @@ body.dark-theme {
     }
 }
 
-header{
-    display: block;
-}
-
 .header{
     width: 100%;
     background-color: transparent;
+    position: fixed;
     top: 0;
     left: 0;
     z-index: var(--z-fixed);
     transition: .4s;
+    
 }
 
 .nav{
