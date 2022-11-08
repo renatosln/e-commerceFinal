@@ -184,7 +184,6 @@ body.dark-theme {
     background-color: var(--first-color);
 }
 
-
 /*loader*/
 .loading{
     position: fixed;
