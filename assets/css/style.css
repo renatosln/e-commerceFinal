@@ -931,7 +931,6 @@ body.dark-theme {
     }
 }
 
-  /* For large devices */
 @media screen and (min-width: 1024px) {
     .container {
         margin-left: auto;
@@ -941,5 +940,3 @@ body.dark-theme {
         right: 3rem;
     }
 }
-
-
