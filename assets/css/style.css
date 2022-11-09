@@ -640,8 +640,9 @@ body.dark-theme {
     padding: 3.5rem 2rem;
     transition: .4s;
     scroll-snap-type: y mandatory;
+    scroll-snap-type: x mandatory;
     overflow-y: scroll;
-    overflow-x: hidden;
+    overflow-x: scroll;
 }
 
 .cart__title-center {
@@ -669,7 +670,10 @@ body.dark-theme {
 
 .cart__card {
     display: flex;
+    width: 100%;
+    height: 100%;
     align-items: center;
+    flex-wrap: wrap;
     column-gap: 1rem;
 }
 
@@ -689,7 +693,8 @@ body.dark-theme {
 
 .cart__img {
     width: 100%;
-    height: 60px;
+    min-height: 40px;
+    max-height: 60px;
     object-fit: cover;
 }
 
