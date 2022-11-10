@@ -1,5 +1,5 @@
 //Espacio para las variables.
-
+//usar alt + z, para mejorar la lectura de algunas explicaciones sobre el código.
 const body = document.querySelector("body");
 const productContainer = document.querySelector(".products__content");
 const header = document.querySelector(".header");
@@ -38,6 +38,56 @@ let products = [
         stock: 20,
     },
 ];
+
+const productsOriginal = [
+    {
+        id: 1,
+        name: "Hoodies",
+        price: 14.00,
+        image: "./assets/img/featured1.png",
+        category: "hoodies",
+        stock: 10,
+    },
+
+    {
+        id: 2,
+        name: "Shirts",
+        price: 24.00,
+        image: "./assets/img/featured2.png",
+        category: "shirts",
+        stock: 15,
+    },
+
+    {
+        id: 3,
+        name: "Sweatshirts",
+        price: 24.00,
+        image: "./assets/img/featured3.png",
+        category: "sweatshirts",
+        stock: 20,
+    },
+];
+
+
+const arrayStockOriginal = [
+
+    {
+        id: 1,
+        stock: 10,
+    },
+
+    {
+        id: 2,
+        stock: 15,
+    },
+
+    {
+        id: 3,
+        stock: 20,
+    },
+
+];
+
 const cartContainer = document.querySelector(".cart__container");
 const cartPrice = document.querySelector(".cart__prices");
 const cartShopItems = document.querySelector(".cart__card");
@@ -50,8 +100,30 @@ const productShow = document.querySelector(".products__filters");
 
 
 
-//Hacemos que muestre un fondo de academlo mientras la página "carga" por 3 segundos
+//ahora hacemos que al recargarse se guarden los cambios.
 
+//para que la página se quede como estaba cuando recargue usaremos localStorage
+
+
+function saveChances(){
+    document.addEventListener("DOMContentLoaded", (e) => {
+        //con localStorage se puede hacer aunq luego si es cierto que no lo recomiendan por problemas con el frontEnd.
+        const doClick = String(JSON.parse(localStorage.getItem("doClick")));
+        if(localStorage.getItem("stock") !== null && doClick === "click"){
+            //preguntamos si existe esa clase, y ya existe un click, si es así, declaramos nuestra variable wearIncartCoppy, claro que es bastante necesario agregar nuestras constantes arrayStockOriginal y productsOriginal, por si en algún momento deseemos a volver a los valores iniciales.
+            const wearInCartCoppy = JSON.parse(localStorage.getItem("stock"));
+            //Ahora el bucle es bastante sencillo, un for, mejor q un forEach, porque así acceso a la posición de products(variable declarada como let) y también acceso a la posición de wearInCartCoppy, ahora vayamos hasta casi el final del código para la explicación de por qué coloqué los localStorages en el sellWear.addListener...
+            for(let i = 0; i < wearInCartCoppy.length; i++){
+                products[i].stock = wearInCartCoppy[i].stock;
+            }
+            printWears();
+        }
+
+    });
+}
+saveChances();
+
+//Hacemos que muestre un fondo de academlo mientras la página "carga" por 3 segundos
 loading1();
 function loading1(){
     const load = document.querySelector(".loading");
@@ -71,6 +143,7 @@ function loading1(){
 
 function printWears(){
     let html = "";
+    let stock = [];
     products.forEach((product) => {
         html += `
         <article class="products__card ${product.category}">
@@ -88,8 +161,10 @@ function printWears(){
             </div>
         </article>
         `;
+        stock.push(product.stock);
     });
     productContainer.innerHTML = html;
+    return stock;
 }
 
 printWears();
@@ -115,7 +190,6 @@ function printWearsWithId(idWear){
         `;
     productContainer.innerHTML = html;
 }
-
 
 function scrollHead(){ 
     window.onscroll = function() {
@@ -168,30 +242,26 @@ productShow.addEventListener("click", (e) => {
         const showWhat = e.target.getAttribute("data-filter");
         if(showWhat === "all"){
             productContainer.innerHTML = "";
-            console.log("Hola goo0");
             printWears();
         }
 
         if(showWhat === ".hoodies"){
             productContainer.innerHTML = "";
-            console.log("Hola goo1");
             printWearsWithId(1);
         }
 
         if(showWhat === ".shirts"){
             productContainer.innerHTML = "";
-            console.log("Hola goo2");
             printWearsWithId(2);
         }
 
         if(showWhat === ".sweatshirts"){
             productContainer.innerHTML = "";
-            console.log("Hola goo3");
             printWearsWithId(3);
         }
     }
 
-})
+});
 
 //agregar productos al carrito de compras
 
@@ -235,7 +305,6 @@ function printWearInCart() {
         </div>
     `;
     });
-
     cartContainer.innerHTML = html;
 
     countProduct();
@@ -249,6 +318,7 @@ function pintarCarta(e){
         const idWear = parseInt(e.target.getAttribute("data-id"));
 
         const currentWear = products.find((product) => product.id === idWear);
+
         if(!currentWear.stock){
             return alert("Sorry, we are out of stock");
         }
@@ -283,6 +353,7 @@ function addWear(idWear){
 
 function deletefood(idWear){
     delete objCartShop[idWear];
+    cartPriceTotal.textContent = `$0.00`;
 }
 
 
@@ -309,8 +380,8 @@ cartContainer.addEventListener("click", (e) => {
         deletefood(idWear);
         
     }
-
     printWearInCart();
+    localStorage.setItem("cart",JSON.stringify(objCartShop));
 });
 
 //Contaremos el total de productos que hay en el carrito.
@@ -357,6 +428,7 @@ function printTotal(){
 //ahora usaremos el botón de checkout para vender todos los productos
 
 sellWear.addEventListener("click", (e) => {
+    const variable = "click";
     if(e.target.classList.contains("cart__btn")){
         products = products.map((product) => {
             if(objCartShop[product.id]?.id === product.id){
@@ -368,13 +440,31 @@ sellWear.addEventListener("click", (e) => {
             }else{
                 return product;
             }
+            
         });
 
         objCartShop = {};
-        printWears();
+        const arrayStock = printWears();
+        const objArrayStock = [
+            {
+                stock: arrayStock[0],
+                id: 1,
+            },
+            {
+                stock: arrayStock[1],
+                id: 2,
+            },
+            {
+                stock: arrayStock[2],
+                id: 3,
+            },
+        ]
+
+        //la verdad es que tuve que pensar bien que quería guardar o que tipo de cambios haría la tienda, llegué a la conclusión que no es tan complicado, solo necesito que se actualice el stock... entonces declaramos un localStorage.setItem que tenga ese arreglo que observamos arriba, también observar que mi función printWears() devuelve en un arreglo (ordenado), los stocks de cada prenda, esto lo agrego a un objArrayStock que realmente solo necesita el stock, pero vaya que me costó un par de intentos y donde pensé que necesitaría el id, en fin lo dejé así por temas de tiempo, y eso lo pasamos en el localStorage, use un doClick para que entrara a la función siempre y cuando haga click en esta, pero también es inutil.
+
+        localStorage.setItem("stock",JSON.stringify(objArrayStock));
+        localStorage.setItem("doClick",JSON.stringify(variable));
+        
         printWearInCart();
     }
 });
-
-printWears();
-printTotal();
